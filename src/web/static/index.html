@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoinPilot AI - 控制台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .btn-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- 標題 -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-yellow-400 mb-2">🪙 CoinPilot AI</h1>
+            <p class="text-gray-400">加密貨幣自動分析與出版系統</p>
+        </header>
+
+        <!-- 狀態卡片 -->
+        <div class="bg-gray-800 rounded-xl p-6 mb-8 shadow-lg">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                <span class="mr-2">📊</span> 系統狀態
+            </h2>
+            <div id="status-content" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gray-700 rounded-lg p-4">
+                    <div class="text-sm text-gray-400">資料狀態</div>
+                    <div id="data-status" class="text-lg font-medium mt-1">載入中...</div>
+                </div>
+                <div class="bg-gray-700 rounded-lg p-4">
+                    <div class="text-sm text-gray-400">BTC 價格</div>
+                    <div id="btc-price" class="text-lg font-medium mt-1 text-green-400">--</div>
+                </div>
+                <div class="bg-gray-700 rounded-lg p-4">
+                    <div class="text-sm text-gray-400">今日文章</div>
+                    <div id="article-status" class="text-lg font-medium mt-1">--</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 控制按鈕 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            
+            <!-- 抓取資料 -->
+            <button 
+                id="btn-collect" 
+                onclick="collectData()"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 px-6 rounded-xl shadow-lg transition-all duration-200 flex flex-col items-center justify-center space-y-2"
+            >
+                <span class="text-3xl">🔄</span>
+                <span class="text-lg">抓取資料</span>
+                <span class="text-xs text-blue-200">採集最新市場數據</span>
+            </button>
+
+            <!-- 查看報告 -->
+            <button 
+                id="btn-report" 
+                onclick="showReport()"
+                class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-6 px-6 rounded-xl shadow-lg transition-all duration-200 flex flex-col items-center justify-center space-y-2"
+            >
+                <span class="text-3xl">📊</span>
+                <span class="text-lg">查看報告</span>
+                <span class="text-xs text-purple-200">顯示採集的數據</span>
+            </button>
+
+            <!-- 發布網站 -->
+            <button 
+                id="btn-publish" 
+                onclick="publishSite()"
+                class="bg-green-600 hover:bg-green-700 text-white font-bold py-6 px-6 rounded-xl shadow-lg transition-all duration-200 flex flex-col items-center justify-center space-y-2"
+            >
+                <span class="text-3xl">🚀</span>
+                <span class="text-lg">發布網站</span>
+                <span class="text-xs text-green-200">採集→生成→建置→推送</span>
+            </button>
+
+        </div>
+
+        <!-- 執行狀態 -->
+        <div id="task-status" class="bg-gray-800 rounded-xl p-6 mb-8 shadow-lg hidden">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                <span class="mr-2" id="task-icon">⏳</span>
+                <span id="task-title">執行中</span>
+            </h2>
+            <div id="task-message" class="text-gray-300 mb-4">--</div>
+            <div id="task-steps" class="space-y-2"></div>
+        </div>
+
+        <!-- 報告預覽 -->
+        <div id="report-panel" class="bg-gray-800 rounded-xl p-6 shadow-lg hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold flex items-center">
+                    <span class="mr-2">📋</span> 採集報告
+                </h2>
+                <button 
+                    onclick="hideReport()" 
+                    class="text-gray-400 hover:text-white"
+                >
+                    ✕ 關閉
+                </button>
+            </div>
+            
+            <!-- 報告摘要 -->
+            <div id="report-summary" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            </div>
+            
+            <!-- 報告詳細 JSON -->
+            <details class="bg-gray-700 rounded-lg">
+                <summary class="p-4 cursor-pointer text-gray-300 hover:text-white">
+                    查看完整 JSON 資料
+                </summary>
+                <pre id="report-json" class="p-4 text-xs text-gray-400 overflow-auto max-h-96"></pre>
+            </details>
+        </div>
+
+        <!-- 頁尾 -->
+        <footer class="text-center mt-10 text-gray-500 text-sm">
+            <p>CoinPilot AI v1.0.0 | 
+                <a href="https://github.com/Pie-ye/coinpilet" class="text-blue-400 hover:underline" target="_blank">GitHub</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        const API_BASE = '';
+        
+        // ============================================
+        // 狀態更新
+        // ============================================
+        
+        async function refreshStatus() {
+            try {
+                const res = await fetch(`${API_BASE}/api/status`);
+                const data = await res.json();
+                
+                // 資料狀態
+                const dataStatus = document.getElementById('data-status');
+                if (data.data_exists) {
+                    dataStatus.textContent = '✅ 已採集';
+                    dataStatus.classList.add('text-green-400');
+                    dataStatus.classList.remove('text-red-400');
+                } else {
+                    dataStatus.textContent = '❌ 尚未採集';
+                    dataStatus.classList.add('text-red-400');
+                    dataStatus.classList.remove('text-green-400');
+                }
+                
+                // BTC 價格
+                const btcPrice = document.getElementById('btc-price');
+                if (data.btc_price) {
+                    btcPrice.textContent = `$${data.btc_price.toLocaleString()}`;
+                } else {
+                    btcPrice.textContent = '--';
+                }
+                
+                // 文章狀態
+                const articleStatus = document.getElementById('article-status');
+                if (data.article_exists) {
+                    articleStatus.textContent = `✅ ${data.article_date}`;
+                    articleStatus.classList.add('text-green-400');
+                    articleStatus.classList.remove('text-red-400');
+                } else {
+                    articleStatus.textContent = '❌ 尚未生成';
+                    articleStatus.classList.add('text-red-400');
+                    articleStatus.classList.remove('text-green-400');
+                }
+                
+            } catch (err) {
+                console.error('Failed to refresh status:', err);
+            }
+        }
+        
+        // ============================================
+        // 按鈕控制
+        // ============================================
+        
+        function setButtonsEnabled(enabled) {
+            const buttons = ['btn-collect', 'btn-report', 'btn-publish'];
+            buttons.forEach(id => {
+                const btn = document.getElementById(id);
+                if (enabled) {
+                    btn.classList.remove('btn-disabled');
+                    btn.disabled = false;
+                } else {
+                    btn.classList.add('btn-disabled');
+                    btn.disabled = true;
+                }
+            });
+        }
+        
+        function showTaskStatus(icon, title, message, isRunning = false) {
+            const panel = document.getElementById('task-status');
+            panel.classList.remove('hidden');
+            
+            document.getElementById('task-icon').textContent = icon;
+            document.getElementById('task-title').textContent = title;
+            document.getElementById('task-message').textContent = message;
+            
+            if (isRunning) {
+                document.getElementById('task-message').classList.add('loading');
+            } else {
+                document.getElementById('task-message').classList.remove('loading');
+            }
+        }
+        
+        function showTaskSteps(steps) {
+            const container = document.getElementById('task-steps');
+            container.innerHTML = steps.map(step => `
+                <div class="text-sm ${step.startsWith('✅') ? 'text-green-400' : step.startsWith('❌') ? 'text-red-400' : 'text-yellow-400'}">
+                    ${step}
+                </div>
+            `).join('');
+        }
+        
+        // ============================================
+        // API 呼叫
+        // ============================================
+        
+        async function collectData() {
+            setButtonsEnabled(false);
+            showTaskStatus('⏳', '資料採集中...', '正在從各資料來源採集最新數據...', true);
+            document.getElementById('task-steps').innerHTML = '';
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/collect`, { method: 'POST' });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    showTaskStatus('✅', '採集完成', data.message || '資料已成功採集');
+                } else {
+                    showTaskStatus('❌', '採集失敗', data.detail || '發生錯誤');
+                }
+            } catch (err) {
+                showTaskStatus('❌', '採集失敗', err.message);
+            } finally {
+                setButtonsEnabled(true);
+                refreshStatus();
+            }
+        }
+        
+        async function showReport() {
+            const panel = document.getElementById('report-panel');
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/report`);
+                
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert(err.detail || '無法載入報告');
+                    return;
+                }
+                
+                const data = await res.json();
+                
+                // 顯示摘要
+                const summary = document.getElementById('report-summary');
+                summary.innerHTML = `
+                    <div class="bg-gray-700 rounded-lg p-3">
+                        <div class="text-xs text-gray-400">BTC 價格</div>
+                        <div class="text-lg font-bold text-green-400">$${(data.price?.price_usd || 0).toLocaleString()}</div>
+                    </div>
+                    <div class="bg-gray-700 rounded-lg p-3">
+                        <div class="text-xs text-gray-400">24h 漲跌</div>
+                        <div class="text-lg font-bold ${(data.price?.price_change_24h || 0) >= 0 ? 'text-green-400' : 'text-red-400'}">
+                            ${(data.price?.price_change_24h || 0).toFixed(2)}%
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 rounded-lg p-3">
+                        <div class="text-xs text-gray-400">恐慌貪婪指數</div>
+                        <div class="text-lg font-bold">${data.sentiment?.emoji || ''} ${data.sentiment?.value || '--'}</div>
+                    </div>
+                    <div class="bg-gray-700 rounded-lg p-3">
+                        <div class="text-xs text-gray-400">BTC Dominance</div>
+                        <div class="text-lg font-bold">${(data.market_structure?.btc_dominance || 0).toFixed(1)}%</div>
+                    </div>
+                `;
+                
+                // 顯示 JSON
+                document.getElementById('report-json').textContent = JSON.stringify(data, null, 2);
+                
+                panel.classList.remove('hidden');
+                
+            } catch (err) {
+                alert('載入報告失敗: ' + err.message);
+            }
+        }
+        
+        function hideReport() {
+            document.getElementById('report-panel').classList.add('hidden');
+        }
+        
+        async function publishSite() {
+            if (!confirm('確定要執行完整發布流程嗎？\n\n這將執行：\n1. 採集資料\n2. 生成文章\n3. 建置網站\n4. 推送到 GitHub')) {
+                return;
+            }
+            
+            setButtonsEnabled(false);
+            showTaskStatus('⏳', '發布中...', 'Step 1/4: 正在採集資料...', true);
+            document.getElementById('task-steps').innerHTML = '';
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/publish`, { method: 'POST' });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    showTaskStatus('✅', '發布完成', data.message || '網站已成功發布');
+                    if (data.steps) {
+                        showTaskSteps(data.steps);
+                    }
+                } else {
+                    showTaskStatus('❌', '發布失敗', data.detail || '發生錯誤');
+                }
+            } catch (err) {
+                showTaskStatus('❌', '發布失敗', err.message);
+            } finally {
+                setButtonsEnabled(true);
+                refreshStatus();
+            }
+        }
+        
+        // ============================================
+        // 初始化
+        // ============================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshStatus();
+            // 每 30 秒刷新一次狀態
+            setInterval(refreshStatus, 30000);
+        });
+    </script>
+</body>
+</html>

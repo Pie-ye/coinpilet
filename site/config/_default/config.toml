@@ -1,0 +1,57 @@
+baseURL = ""
+languageCode = "zh-tw"
+title = "CoinPilot AI - 比特幣市場日報"
+theme = "hugo-theme-stack"
+
+# 預設語言設定
+defaultContentLanguage = "zh-tw"
+
+# 關閉自動生成 robots.txt
+enableRobotsTXT = true
+
+# 啟用 Git 資訊
+enableGitInfo = false
+
+# 分頁設定 (Hugo v0.128.0+)
+[pagination]
+  pagerSize = 10
+
+# 日期格式
+[frontmatter]
+  date = ["date", "publishDate", "lastmod"]
+  lastmod = ["lastmod", ":git", "date", "publishDate"]
+  publishDate = ["publishDate", "date"]
+
+# 標記語言設定
+[markup]
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = false
+    noClasses = false
+    tabWidth = 4
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 4
+
+# 輸出格式
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+  page = ["HTML"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
+
+# 相關文章
+[related]
+  threshold = 80
+  includeNewer = true
+  toLower = true
+  [[related.indices]]
+    name = "tags"
+    weight = 100
+  [[related.indices]]
+    name = "categories"
+    weight = 200

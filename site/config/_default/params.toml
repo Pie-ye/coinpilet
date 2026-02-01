@@ -1,0 +1,64 @@
+# 主要內容設定
+mainSections = ["posts"]
+featuredImageField = "image"
+rssFullContent = true
+
+# 網站 Favicon
+favicon = ""
+
+# 頁尾設定
+[footer]
+    since = 2026
+    customText = "由 CoinPilot AI 自動生成 | 僅供參考，不構成投資建議"
+
+# 日期格式
+[dateFormat]
+    published = "2006-01-02"
+    lastUpdated = "2006-01-02 15:04"
+
+# 側邊欄設定
+[sidebar]
+    compact = false
+    emoji = "🚀"
+    subtitle = "每日比特幣市場分析，AI 自動生成"
+    avatar = "https://raw.githubusercontent.com/github/explore/main/topics/bitcoin/bitcoin.png"
+
+# 文章設定
+[article]
+    math = false
+    toc = true
+    readingTime = true
+    [article.license]
+        enabled = false
+
+# 評論系統 (暫時關閉)
+[comments]
+    enabled = false
+
+# 小工具設定
+[widgets]
+    homepage = [
+        { type = "search" },
+        { type = "archives", params = { limit = 5 } },
+        { type = "categories", params = { limit = 10 } },
+        { type = "tag-cloud", params = { limit = 10 } },
+    ]
+    page = [
+        { type = "toc" },
+    ]
+
+# 預設文章設定
+[defaultImage]
+    opengraph = ""
+    twitter = ""
+
+# 顏色主題
+[colorScheme]
+    toggle = true
+    default = "auto"
+
+# OpenGraph / Twitter Cards 設定
+[opengraph]
+    [opengraph.twitter]
+        site = ""
+        card = "summary_large_image"

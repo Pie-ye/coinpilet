@@ -1,0 +1,58 @@
+# Docker 專用忽略檔案
+# 排除不需要複製到容器中的檔案
+
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+.installed.cfg
+*.egg
+.venv
+venv
+ENV
+env
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# 環境變數
+.env
+.env.local
+
+# Hugo 輸出
+site/public
+site/resources
+site/.hugo_build.lock
+
+# 資料 (由 volume 掛載)
+data/*.json
+
+# 日誌
+*.log
+logs
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker
+Dockerfile*
+docker-compose*.yml
+!Dockerfile
+!docker-compose.yml
+
+# 文件
+*.md
+!README.md

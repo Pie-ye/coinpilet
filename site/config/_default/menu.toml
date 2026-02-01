@@ -1,0 +1,36 @@
+# 主選單
+[[main]]
+    name = "首頁"
+    url = "/"
+    weight = 10
+    [main.params]
+        icon = "home"
+
+[[main]]
+    name = "市場分析"
+    url = "/categories/市場分析/"
+    weight = 20
+    [main.params]
+        icon = "categories"
+
+[[main]]
+    name = "標籤"
+    url = "/tags/"
+    weight = 30
+    [main.params]
+        icon = "tag"
+
+[[main]]
+    name = "歸檔"
+    url = "/archives/"
+    weight = 40
+    [main.params]
+        icon = "archives"
+
+# 社群連結
+[[social]]
+    identifier = "github"
+    name = "GitHub"
+    url = "https://github.com/coinpilot-ai"
+    [social.params]
+        icon = "brand-github"
