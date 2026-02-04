@@ -205,14 +205,14 @@ def cmd_serve(args: argparse.Namespace) -> int:
 
 
 async def cmd_run_async(args: argparse.Namespace) -> int:
-    """執行完整流程 (採集 → 生成 → 建置)"""
+    """執行完整流程 (採集 → 生成 → 建置 → 推送)"""
     logger = logging.getLogger("run")
     logger.info("=" * 60)
     logger.info("CoinPilot AI - 開始執行完整流程")
     logger.info("=" * 60)
 
     # Step 1: 採集資料
-    logger.info("\n📊 Step 1/3: 資料採集")
+    logger.info("\n📊 Step 1/4: 資料採集")
     logger.info("-" * 40)
     result = cmd_collect(args)
     if result != 0:
@@ -220,7 +220,7 @@ async def cmd_run_async(args: argparse.Namespace) -> int:
         return result
 
     # Step 2: AI 生成文章
-    logger.info("\n🤖 Step 2/3: AI 文章生成")
+    logger.info("\n🤖 Step 2/4: AI 文章生成")
     logger.info("-" * 40)
     result = await cmd_write_async(args)
     if result != 0:
@@ -228,12 +228,37 @@ async def cmd_run_async(args: argparse.Namespace) -> int:
         return result
 
     # Step 3: 建置網站
-    logger.info("\n🔨 Step 3/3: Hugo 網站建置")
+    logger.info("\n🔨 Step 3/4: Hugo 網站建置")
     logger.info("-" * 40)
     result = cmd_build(args)
     if result != 0:
         logger.error("網站建置失敗")
         return result
+
+    # Step 4: 推送到 GitHub
+    logger.info("\n🚀 Step 4/4: 推送到 GitHub")
+    logger.info("-" * 40)
+    
+    try:
+        from src.publisher.github import push_to_github
+        
+        today = datetime.now().strftime("%Y-%m-%d")
+        commit_message = f"🚀 Auto publish: {today} 比特幣日報"
+        
+        push_result = push_to_github(commit_message=commit_message)
+        
+        if push_result["success"]:
+            logger.info(f"✅ {push_result['message']}")
+            if push_result.get("details", {}).get("status") == "no_changes":
+                logger.info("   提示: 沒有新的變更需要推送")
+        else:
+            logger.warning(f"⚠️ GitHub 推送失敗: {push_result['message']}")
+            logger.warning("   網站已建置完成，但未推送到 GitHub")
+            logger.warning("   您可以稍後手動推送或檢查 Git 設定")
+            # 不中斷流程，因為網站已建置成功
+    except Exception as e:
+        logger.warning(f"⚠️ GitHub 推送失敗: {e}")
+        logger.warning("   網站已建置完成，但未推送到 GitHub")
 
     logger.info("\n" + "=" * 60)
     logger.info("✅ CoinPilot AI - 完整流程執行成功!")
@@ -247,7 +272,8 @@ async def cmd_run_async(args: argparse.Namespace) -> int:
 
     logger.info(f"\n📄 今日文章: {article_path}")
     logger.info(f"🌐 網站輸出: {output_dir}")
-    logger.info(f"\n💡 預覽網站: python main.py serve")
+    logger.info(f"🚀 Cloudflare Pages 將自動部署")
+    logger.info(f"\n💡 本地預覽: python main.py serve")
 
     return 0
 
@@ -344,13 +370,12 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 範例:
-  python main.py run                    # 執行完整流程
+  python main.py run                    # 執行完整流程 (採集→生成→建置→推送)
   python main.py collect                # 僅採集資料
   python main.py write --mock           # 使用模擬模式生成文章
   python main.py build                  # 僅建置網站
   python main.py serve --port 8080      # 啟動開發伺服器
   python main.py status                 # 查看系統狀態
-  python main.py web                    # 啟動 Web GUI 控制台
         """,
     )
 
@@ -411,12 +436,6 @@ def main():
     # status 指令
     status_parser = subparsers.add_parser("status", help="顯示系統狀態")
     status_parser.set_defaults(func=cmd_status)
-
-    # web 指令
-    web_parser = subparsers.add_parser("web", help="啟動 Web GUI 控制台")
-    web_parser.add_argument("--port", type=int, default=8000, help="伺服器埠號 (預設: 8000)")
-    web_parser.add_argument("--host", default="0.0.0.0", help="綁定位址 (預設: 0.0.0.0)")
-    web_parser.set_defaults(func=cmd_web)
 
     args = parser.parse_args()
 

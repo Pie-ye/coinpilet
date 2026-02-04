@@ -134,7 +134,28 @@
     </div>
 
     <script>
-        const API_BASE = '';
+        // 自動偵測 API 位址
+        const API_BASE = window.location.origin;
+        
+        // 共用 fetch 設定
+        async function apiCall(endpoint, options = {}) {
+            const url = `${API_BASE}${endpoint}`;
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                ...options,
+            };
+            
+            try {
+                const response = await fetch(url, defaultOptions);
+                return response;
+            } catch (err) {
+                console.error(`API call failed: ${endpoint}`, err);
+                throw err;
+            }
+        }
         
         // ============================================
         // 狀態更新
@@ -142,7 +163,7 @@
         
         async function refreshStatus() {
             try {
-                const res = await fetch(`${API_BASE}/api/status`);
+                const res = await apiCall('/api/status');
                 const data = await res.json();
                 
                 // 資料狀態
@@ -230,11 +251,11 @@
         
         async function collectData() {
             setButtonsEnabled(false);
-            showTaskStatus('⏳', '資料採集中...', '正在從各資料來源採集最新數據...', true);
+            showTaskStatus('⏳', '資料採集中...', '正在從各資料來源採集最新數據...（約需 10-30 秒）', true);
             document.getElementById('task-steps').innerHTML = '';
             
             try {
-                const res = await fetch(`${API_BASE}/api/collect`, { method: 'POST' });
+                const res = await apiCall('/api/fetch-data', { method: 'POST' });
                 const data = await res.json();
                 
                 if (res.ok) {
@@ -243,7 +264,8 @@
                     showTaskStatus('❌', '採集失敗', data.detail || '發生錯誤');
                 }
             } catch (err) {
-                showTaskStatus('❌', '採集失敗', err.message);
+                console.error('Collect error:', err);
+                showTaskStatus('❌', '採集失敗', `網路錯誤: ${err.message}`);
             } finally {
                 setButtonsEnabled(true);
                 refreshStatus();
@@ -254,7 +276,7 @@
             const panel = document.getElementById('report-panel');
             
             try {
-                const res = await fetch(`${API_BASE}/api/report`);
+                const res = await apiCall('/api/report');
                 
                 if (!res.ok) {
                     const err = await res.json();
@@ -302,7 +324,7 @@
         }
         
         async function publishSite() {
-            if (!confirm('確定要執行完整發布流程嗎？\n\n這將執行：\n1. 採集資料\n2. 生成文章\n3. 建置網站\n4. 推送到 GitHub')) {
+            if (!confirm('確定要執行完整發布流程嗎？\n\n這將執行：\n1. 採集資料\n2. 生成文章\n3. 建置網站\n4. 推送到 GitHub\n\n（約需 1-3 分鐘）')) {
                 return;
             }
             
@@ -311,7 +333,7 @@
             document.getElementById('task-steps').innerHTML = '';
             
             try {
-                const res = await fetch(`${API_BASE}/api/publish`, { method: 'POST' });
+                const res = await apiCall('/api/publish', { method: 'POST' });
                 const data = await res.json();
                 
                 if (res.ok) {
@@ -323,7 +345,8 @@
                     showTaskStatus('❌', '發布失敗', data.detail || '發生錯誤');
                 }
             } catch (err) {
-                showTaskStatus('❌', '發布失敗', err.message);
+                console.error('Publish error:', err);
+                showTaskStatus('❌', '發布失敗', `網路錯誤: ${err.message}`);
             } finally {
                 setButtonsEnabled(true);
                 refreshStatus();

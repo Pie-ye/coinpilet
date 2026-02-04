@@ -20,6 +20,7 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 # 設定路徑
@@ -39,6 +40,15 @@ app = FastAPI(
     title="CoinPilot AI",
     description="加密貨幣分析與出版系統 Web 控制台",
     version="1.0.0",
+)
+
+# CORS 設定 - 允許所有來源（本地開發用）
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # ============================================
@@ -147,8 +157,8 @@ async def get_report():
         raise HTTPException(status_code=500, detail=f"讀取報告失敗: {str(e)}")
 
 
-@app.post("/api/collect")
-async def collect_data(background_tasks: BackgroundTasks):
+@app.post("/api/fetch-data")
+async def fetch_market_data(background_tasks: BackgroundTasks):
     """執行資料採集"""
     global _task_running
     

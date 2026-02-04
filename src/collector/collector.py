@@ -11,6 +11,7 @@ from typing import Optional
 
 from .binance import BinanceClient, OHLCData
 from .cache import OHLCCache
+from .coinglass import CoinglassClient, DerivativesData
 from .coingecko import BTCPriceData, CoinGeckoClient, GlobalMarketData
 from .fear_greed import FearGreedClient, FearGreedData
 from .news import NewsClient, NewsItem
@@ -29,6 +30,7 @@ class DailyContext:
     news: list[dict]  # 新聞列表
     technical: dict = field(default_factory=dict)  # 技術指標
     market_structure: dict = field(default_factory=dict)  # 市場結構 (BTC Dominance 等)
+    derivatives: Optional[dict] = None  # 籌碼面指標 (OI, 多空比, 交易所流量)
     metadata: dict = field(default_factory=dict)  # 元資料
 
     def to_dict(self) -> dict:
@@ -39,6 +41,7 @@ class DailyContext:
             "news": self.news,
             "technical": self.technical,
             "market_structure": self.market_structure,
+            "derivatives": self.derivatives,
             "metadata": self.metadata,
         }
 
@@ -48,7 +51,7 @@ class DailyContext:
 
 class Collector:
     """
-    資料採集器 - 整合 CoinGecko、Fear & Greed Index、Google News、Binance K線、技術指標
+    資料採集器 - 整合 CoinGecko、Fear & Greed Index、Google News、Binance K線、技術指標、Coinglass 籌碼面
 
     使用方式:
         collector = Collector()
@@ -59,6 +62,7 @@ class Collector:
     def __init__(
         self,
         coingecko_api_key: Optional[str] = None,
+        coinglass_api_key: Optional[str] = None,
         news_language: str = "en",
         news_country: str = "US",
         data_dir: str = "data",
@@ -68,11 +72,13 @@ class Collector:
 
         Args:
             coingecko_api_key: CoinGecko Pro API Key (可選)
+            coinglass_api_key: Coinglass API Key (用於籌碼面指標)
             news_language: 新聞語言
             news_country: 新聞國家
             data_dir: 資料目錄 (用於 K 線快取)
         """
         self.coingecko = CoinGeckoClient(api_key=coingecko_api_key)
+        self.coinglass = CoinglassClient(api_key=coinglass_api_key) if coinglass_api_key else None
         self.fear_greed = FearGreedClient()
         self.news = NewsClient(language=news_language, country=news_country)
         self.binance = BinanceClient()
@@ -87,9 +93,22 @@ class Collector:
         """採集恐慌貪婪指數"""
         return self.fear_greed.get_current_index()
 
-    def collect_news(self, limit: int = 3) -> list[NewsItem]:
-        """採集新聞標題"""
-        return self.news.get_bitcoin_news(limit=limit)
+    def collect_news(self, limit: int = 3, fetch_content: bool = True) -> list[NewsItem]:
+        """
+        採集加密貨幣新聞 (包含文章內容)
+        
+        Args:
+            limit: 每個新聞來源的新聞數量
+            fetch_content: 是否爬取文章全文
+        
+        Returns:
+            list[NewsItem]: 新聞列表
+        """
+        return self.news.get_crypto_news_from_sources(
+            sources=["coindesk", "cointelegraph"],
+            limit=limit,
+            fetch_content=fetch_content,
+        )
 
     def collect_global_market(self) -> GlobalMarketData:
         """採集全球市場數據 (BTC Dominance)"""
@@ -211,6 +230,17 @@ class Collector:
             logger.error(f"全球市場數據採集失敗: {e}")
             errors.append(f"market_structure: {e}")
 
+        # 採集籌碼面指標 (OI, 多空比, 交易所流量) - Graceful Degradation
+        derivatives_data = None
+        if self.coinglass:
+            try:
+                derivatives_data = self.coinglass.collect_all()
+            except Exception as e:
+                logger.warning(f"籌碼面指標採集失敗 (非致命): {e}")
+                errors.append(f"derivatives: {e}")
+        else:
+            logger.info("Coinglass API Key 未設定，跳過籌碼面指標採集")
+
         # 檢查是否有關鍵資料缺失
         if price_data is None or sentiment_data is None:
             raise RuntimeError(f"關鍵資料採集失敗: {errors}")
@@ -227,8 +257,9 @@ class Collector:
             news=[item.to_dict() for item in news_data],
             technical=technical_data.to_dict() if technical_data else {},
             market_structure=global_market_data.to_dict() if global_market_data else {},
+            derivatives=derivatives_data.to_dict() if derivatives_data else None,
             metadata={
-                "version": "2.0.0",
+                "version": "2.1.0",
                 "sources": {
                     "price": "CoinGecko",
                     "sentiment": "Alternative.me",
@@ -236,6 +267,7 @@ class Collector:
                     "klines": "Binance",
                     "technical": "pandas-ta",
                     "market_structure": "CoinGecko Global",
+                    "derivatives": "Coinglass" if derivatives_data else None,
                 },
                 "errors": errors if errors else None,
             },
@@ -250,6 +282,8 @@ class Collector:
             logger.info(f"  技術: {technical_data.overall_signal_zh}")
         if global_market_data:
             logger.info(f"  BTC.D: {global_market_data.btc_dominance:.1f}%")
+        if derivatives_data:
+            logger.info(f"  籌碼: 已採集 (OI/多空比/交易所流量)")
         logger.info("=" * 50)
 
         return context

@@ -4,6 +4,7 @@
 
 from .binance import BinanceClient, OHLCData
 from .cache import OHLCCache
+from .coinglass import CoinglassClient, DerivativesData, OpenInterestData, LongShortRatioData, ExchangeFlowData
 from .collector import Collector, DailyContext
 from .coingecko import CoinGeckoClient, GlobalMarketData
 from .fear_greed import FearGreedClient
@@ -15,6 +16,11 @@ __all__ = [
     "DailyContext",
     "CoinGeckoClient",
     "GlobalMarketData",
+    "CoinglassClient",
+    "DerivativesData",
+    "OpenInterestData",
+    "LongShortRatioData",
+    "ExchangeFlowData",
     "FearGreedClient",
     "NewsClient",
     "BinanceClient",

@@ -16,6 +16,10 @@ dependencies = [
     "pandas>=2.0.0",
     "pandas-ta>=0.3.14b",
     "numpy>=1.24.0",
+    # 新聞內容解析
+    "newspaper3k>=0.2.8",
+    "lxml>=5.0.0",
+    "lxml-html-clean>=0.1.0",
     # Web GUI
     "fastapi>=0.109.0",
     "uvicorn[standard]>=0.27.0",
