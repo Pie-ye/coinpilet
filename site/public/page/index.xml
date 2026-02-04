@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on CoinPilot AI - 比特幣市場日報</title><link>/page/</link><description>Recent content in Pages on CoinPilot AI - 比特幣市場日報</description><generator>Hugo -- gohugo.io</generator><language>zh-tw</language><lastBuildDate>Sun, 01 Feb 2026 00:00:00 +0000</lastBuildDate><atom:link href="/page/index.xml" rel="self" type="application/rss+xml"/><item><title>關於 CoinPilot AI</title><link>/page/about/</link><pubDate>Sun, 01 Feb 2026 00:00:00 +0000</pubDate><guid>/page/about/</guid><description>&lt;h2 id="coinpilot-ai"&gt;CoinPilot AI
+&lt;/h2&gt;&lt;p&gt;CoinPilot AI 是一個全自動化的比特幣每日分析系統，旨在消除人工搜集資訊與撰寫報告的時間成本。&lt;/p&gt;
+&lt;h3 id="系統架構"&gt;系統架構
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;採集層 (Eyes) → 從 API 收集市場數據
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ↓
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;大腦層 (Brain) → AI 分析生成文章
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ↓
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;展示層 (Face) → Hugo 靜態網站發布
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="數據來源"&gt;數據來源
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;CoinGecko&lt;/strong&gt; - 比特幣價格、交易量、市值&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Alternative.me&lt;/strong&gt; - 恐慌貪婪指數&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Google News&lt;/strong&gt; - 最新市場新聞&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="免責聲明"&gt;免責聲明
+&lt;/h3&gt;&lt;p&gt;本站內容由 AI 自動生成，僅供參考學習使用，不構成任何形式的投資建議。&lt;/p&gt;
+&lt;p&gt;加密貨幣市場具有高度波動性和風險，您的投資決策應基於自己的研究和專業財務建議。&lt;/p&gt;
+&lt;h3 id="聯繫我們"&gt;聯繫我們
+&lt;/h3&gt;&lt;p&gt;如有任何問題或建議，歡迎透過 GitHub 與我們聯繫。&lt;/p&gt;</description></item><item><title>搜尋</title><link>/page/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/page/search/</guid><description/></item><item><title>歸檔</title><link>/page/archives/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/page/archives/</guid><description/></item></channel></rss>

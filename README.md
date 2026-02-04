@@ -93,8 +93,14 @@ python main.py status    # 查看系統狀態
      - **Production branch**: `main`
      - **Framework preset**: `None`（因為我們本地已經建置好）
      - **Build command**: 留空（不需要）
-     - **Build output directory**: `site/public`
+     - **Build output directory**: `site/public` ⚠️ **必須設為此路徑**
+     - **Root directory**: `/`（保持預設）
    - 點擊「Save and Deploy」
+
+   ⚠️ **常見錯誤**：如果看到 "Output directory 'public' not found"，請確認：
+   - Build output directory 設為 `site/public`（不是 `public`）
+   - `.gitignore` 中沒有忽略 `site/public/`
+   - 執行過 `python main.py run` 建置網站
 
 3. **執行一鍵發布**：
    ```bash

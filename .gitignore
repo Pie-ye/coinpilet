@@ -38,7 +38,7 @@ env/
 *~
 
 # Hugo
-site/public/
+# site/public/ 需要推送到 GitHub 供 Cloudflare Pages 部署
 site/resources/
 site/.hugo_build.lock
 

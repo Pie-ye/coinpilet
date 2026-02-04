@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CoinPilot on CoinPilot AI - 比特幣市場日報</title><link>/tags/coinpilot/</link><description>Recent content in CoinPilot on CoinPilot AI - 比特幣市場日報</description><generator>Hugo -- gohugo.io</generator><language>zh-tw</language><lastBuildDate>Sun, 01 Feb 2026 00:00:00 +0000</lastBuildDate><atom:link href="/tags/coinpilot/index.xml" rel="self" type="application/rss+xml"/><item><title>歡迎來到 CoinPilot AI</title><link>/posts/welcome/</link><pubDate>Sun, 01 Feb 2026 00:00:00 +0000</pubDate><guid>/posts/welcome/</guid><description>&lt;h2 id="-歡迎使用-coinpilot-ai"&gt;👋 歡迎使用 CoinPilot AI
+&lt;/h2&gt;&lt;p&gt;CoinPilot AI 是一個全自動化的比特幣每日分析系統。透過整合多個數據來源和 AI 技術，我們每天為您提供專業的市場日報。&lt;/p&gt;
+&lt;h2 id="-我們的數據來源"&gt;📊 我們的數據來源
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;數據類型&lt;/th&gt;
+ &lt;th&gt;來源&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;價格資料&lt;/td&gt;
+ &lt;td&gt;CoinGecko&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;情緒指數&lt;/td&gt;
+ &lt;td&gt;Alternative.me&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;市場新聞&lt;/td&gt;
+ &lt;td&gt;Google News&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="-ai-分析"&gt;🤖 AI 分析
+&lt;/h2&gt;&lt;p&gt;我們使用先進的 AI 模型分析市場數據，生成包含以下內容的日報：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;市場快照&lt;/strong&gt; - 價格、漲跌幅、交易量&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;情緒分析&lt;/strong&gt; - 恐慌貪婪指數解讀&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;操作建議&lt;/strong&gt; - 基於數據的簡單建議&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="-風險提示"&gt;⚠️ 風險提示
+&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;本站內容由 AI 自動生成，僅供參考，不構成任何投資建議。加密貨幣市場波動劇烈，請根據自身風險承受能力謹慎決策。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;em&gt;開始探索每日市場分析吧！&lt;/em&gt;&lt;/p&gt;</description></item></channel></rss>
