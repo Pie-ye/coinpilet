@@ -42,25 +42,80 @@
 
 ### 安裝
 
-#### 1. 安裝 Python 依賴
+#### Windows 一鍵安裝（推薦）
+
+雙擊執行 `install.bat`，自動完成所有安裝步驟：
+
+```powershell
+# 雙擊執行 install.bat，或在命令列執行：
+.\install.bat
+```
+
+腳本會自動：
+- ✅ 檢查 Python 版本（>= 3.10）
+- ✅ 建立虛擬環境 `.venv`
+- ✅ 安裝所有 Python 套件（包含開發工具）
+- ✅ 嘗試安裝 Hugo Extended（透過 Chocolatey）
+- ✅ 檢查 Git 是否可用
+- ✅ 建立必要的資料目錄
+- ✅ 複製環境變數範本 `.env`
+
+**安裝完成後**，請編輯 `.env` 檔案並填入您的 `GITHUB_TOKEN`：
+
+```bash
+# 編輯 .env 檔案
+notepad .env
+
+# 將此行改為您的實際 Token：
+GITHUB_TOKEN=ghp_your_actual_token_here
+```
+
+然後啟動虛擬環境並開始使用：
+
+```powershell
+# 啟動虛擬環境
+.venv\Scripts\activate
+
+# 查看系統狀態
+python main.py status
+
+# 測試資料採集
+python main.py collect
+```
+
+---
+
+#### 手動安裝（Linux/macOS 或進階使用者）
+
+##### 1. 安裝 Python 依賴
 
 ```bash
 # 複製環境變數範本
 cp .env.example .env
 
+# 建立虛擬環境（可選）
+python -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# 或
+.venv\Scripts\activate  # Windows
+
 # 安裝 Python 依賴
 pip install -e .
+
+# 安裝開發工具（可選）
+pip install -e ".[dev]"
 ```
 
-#### 2. 安裝 Hugo Extended
+##### 2. 安裝 Hugo Extended
 
 **Windows**:
 ```powershell
-# 使用 Chocolatey
+# 使用 Chocolatey（推薦）
 choco install hugo-extended
 
-# 或從 GitHub 下載
+# 或從 GitHub 手動下載
 # https://github.com/gohugoio/hugo/releases
+# 請下載 hugo_extended_xxx_windows-amd64.zip
 ```
 
 **Linux/macOS**:
@@ -69,7 +124,13 @@ choco install hugo-extended
 brew install hugo
 
 # 或使用 Snap
-snap install hugo
+snap install hugo --channel=extended
+```
+
+**驗證安裝**：
+```bash
+hugo version
+# 應顯示 "extended" 字樣
 ```
 
 ### 使用方式

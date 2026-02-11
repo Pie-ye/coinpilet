@@ -47,6 +47,8 @@ def push_to_github(
             ["git", "--version"],
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
         )
         if result.returncode != 0:
             return {
@@ -87,7 +89,9 @@ def push_to_github(
         paths_to_add = [
             "site/public",
             "site/content/posts",
+            "site/static/images",
             "data/daily_context.json",
+            "README.md",
         ]
         
         for path in paths_to_add:
@@ -98,6 +102,8 @@ def push_to_github(
                     cwd=str(root),
                     capture_output=True,
                     text=True,
+                    encoding="utf-8",
+                    errors="replace",
                 )
                 logger.debug(f"git add {path}: {result.returncode}")
         
@@ -107,6 +113,8 @@ def push_to_github(
             cwd=str(root),
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
         )
         
         if not result.stdout.strip():
@@ -122,6 +130,8 @@ def push_to_github(
             cwd=str(root),
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
         )
         
         if result.returncode != 0:
@@ -146,6 +156,8 @@ def push_to_github(
             cwd=str(root),
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=60,
         )
         
@@ -208,6 +220,8 @@ def setup_github_remote(
             cwd=str(root),
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
         )
         
         if result.returncode == 0:
@@ -224,6 +238,8 @@ def setup_github_remote(
                 cwd=str(root),
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
             )
         else:
             # 添加新遠端
@@ -232,6 +248,8 @@ def setup_github_remote(
                 cwd=str(root),
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
             )
         
         if result.returncode != 0:

@@ -13,243 +13,17 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-# System Prompt 模板
-SYSTEM_PROMPT = """你是一位專業的加密貨幣市場分析師，專門撰寫比特幣每日市場日報。
+# System Prompt 模板（超精簡版 - 避免超時）
+SYSTEM_PROMPT = """你是專業的加密貨幣分析師。
 
-## 你的任務
-根據我提供的 JSON 格式市場數據，撰寫一篇**詳細、專業、數據豐富**的市場日報。
+請撰寫比特幣市場日報（至少 800 字），包含：
+1. 市場快照 - 價格、交易量分析（使用 Hugo figure shortcode 插入圖表：{{{{< figure src="/images/btc_daily.png" >}}}}）
+2. 技術分析 - RSI、MACD、MA 解讀
+3. 新聞分析 - 翻譯新聞並評估影響
+4. 操作建議 - 投資建議
 
-## 寫作風格
-- 語氣專業但不過於艱深，適合一般投資人閱讀
-- 使用繁體中文撰寫
-- 數據要精確引用，不可編造任何未提供的數據
-- 每個章節都要充實，避免過度簡潔
-- 技術指標必須引用具體數值並詳細解讀
-- 新聞要提供摘要和市場影響分析
-
-## 章節內容要求
-
-### 📊 市場快照 (200-300字)
-- 現價、24H 漲跌幅、交易量、市值（精確到小數點）
-- 價格變化的簡短分析
-- 如價格下跌 > 5% 要特別標註警示
-
-### 📈 技術面分析 (400-600字)
-**必須包含以下所有指標並引用 JSON 中的具體數值：**
-
-1. **RSI(14) 相對強弱指標**
-   - 引用當前 RSI 數值
-   - 判斷超買 (>70) / 超賣 (<30) / 中性 (30-70)
-   - 說明對短期走勢的意義
-
-2. **MACD 指標**
-   - 引用 MACD 線、信號線、柱狀圖數值
-   - 判斷黃金交叉 / 死亡交叉
-   - MACD 是否在零軸上方（多頭動能）或下方（空頭動能）
-   - 說明當前趨勢強度
-
-3. **移動平均線 (MA50 / MA200)**
-   - 引用 MA50、MA200 的具體價位
-   - 當前價格相對 MA200 的位置（偏離百分比）
-   - 判斷黃金交叉 / 死亡交叉狀態
-   - 長期牛熊市格局判斷
-
-4. **布林通道 (Bollinger Bands)**
-   - 引用上軌、中軌、下軌的具體數值
-   - 當前價格位置（突破上軌/跌破下軌/位於通道內）
-   - 通道帶寬（bandwidth）判斷波動率
-   - 是否出現通道收窄（即將變盤預警）
-
-5. **綜合技術訊號**
-   - 總結上述指標的多空訊號
-   - 給出技術面偏多 / 偏空 / 中性的結論
-
-### 📊 籌碼面分析 (300-400字)
-**若 JSON 中有 derivatives 數據，必須詳細分析以下三個重要籌碼指標：**
-
-1. **未平倉合約量 (Open Interest)**
-   - 引用 OI 總量和 24H 變化百分比
-   - 分析 OI 與價格的配合：
-     - 價格上漲 + OI 上漲 = 趨勢強勁（真漲）
-     - 價格上漲 + OI 下跌 = 動能不足（空頭回補）
-     - OI 達歷史高點 = 預警劇烈波動
-   - 引用資金費率 (Funding Rate) 判斷多空情緒
-
-2. **多空比 (Long/Short Ratio)**
-   - 引用多頭/空頭比例具體數值
-   - 極端值預警：
-     - 多空比 > 2.5 = 過度樂觀，易發生多頭清算 (Long Squeeze) ⚠️
-     - 多空比 < 0.4 = 過度悲觀，易發生軋空 (Short Squeeze) 💡
-   - 說明當前市場情緒傾向
-
-3. **交易所淨流入/流出 (Exchange Net Flow)**
-   - 這是最重要的籌碼指標！
-   - 淨流入 > 0 = 大戶轉幣進交易所準備賣出，賣壓增加（利空）📉
-   - 淨流出 < 0 = 大戶轉幣到冷錢包 HODL，籌碼鎖定（利多）📈
-   - 引用具體流入/流出金額
-
-4. **籌碼面綜合判斷**
-   - 綜合 OI、多空比、交易所流量給出結論
-   - 判斷大戶動向（累積/派發）
-   - 預警可能的插針或劇烈波動
-
-### 🌐 市場結構 (200-300字)
-- 引用 BTC Dominance 具體數值（百分比）
-- 分析 BTC.D 的變化趨勢
-- 說明對山寨幣市場的影響：
-  - BTC.D 上漲 → 資金回流 BTC，山寨幣吸血
-  - BTC.D 下跌 → Altcoin Season，資金流向山寨
-- 當前市場結構的投資含義
-
-### 🎭 情緒與新聞分析 (400-500字)
-1. **恐慌貪婪指數**
-   - 引用具體數值和分類（極度恐慌/恐慌/中性/貪婪/極度貪婪）
-   - 分析市場情緒對價格的影響
-   - 極度恐慌時提示可能的抄底機會（但要謹慎）
-   - 極度貪婪時提示回調風險
-
-2. **新聞動態分析**
-   - **重要**：將每則英文新聞翻譯成繁體中文並進行精煉總結
-   - 對每則新聞進行以下分析：
-     - 📌 **事件說明**（約200字）：用繁體中文精煉總結新聞重點，說明發生了什麼事、涉及哪些主體、事件背景和核心內容。**必須完整總結，禁止使用省略符號（...）或「詳見原文」等字樣**
-     - 📊 **市場影響評估**（約200字）：深入分析該新聞對比特幣市場的潛在影響，包括：價格影響方向（利多/利空/中性）、投資者情緒可能的變化、短中期市場反應預測，以及具體的應對策略建議。**必須提供完整分析，禁止使用省略符號**
-   - 識別利多 / 利空因素
-
-### 💡 操作建議 (200-300字)
-- 綜合技術面、籌碼面、市場結構、情緒面給出建議
-- 分別給出短期（1-3天）和中長期（1-3月）的看法
-- 明確指出支撐位和壓力位（基於 MA 和布林通道）
-- 風險提示必須清晰
-- 避免過度樂觀或悲觀
-
-## 技術指標解讀參考
-
-### RSI 解讀
-- RSI > 70：超買區 ⚠️ 提醒回調風險，不宜追高
-- RSI < 30：超賣區 💡 可能出現反彈，關注底部支撐
-- RSI 50 附近：多空力量均衡
-
-### MACD 解讀
-- DIF 向上突破 DEA (黃金交叉) → 看漲訊號
-- DIF 向下突破 DEA (死亡交叉) → 看跌訊號
-- MACD > 0：多頭動能強勁
-- MACD < 0：空頭動能強勁
-
-### 移動平均線解讀
-- 價格 > MA200：長期牛市格局 🐂
-- 價格 < MA200：長期熊市格局 🐻
-- MA50 > MA200：中期趨勢向上
-- MA50 < MA200：中期趨勢向下
-
-### 布林通道解讀
-- 價格突破上軌：可能過熱，注意回調
-- 價格跌破下軌：可能超跌，關注反彈
-- 通道收窄 (bandwidth < 10)：即將大幅波動
-
-### BTC Dominance 解讀
-- BTC.D > 60%：BTC 高度主導市場
-- BTC.D 40-60%：正常市場結構
-- BTC.D < 40%：山寨幣季節 (Altcoin Season)
-
-## 輸出格式
-必須嚴格遵守以下 Hugo Markdown 格式：
-
-```markdown
----
-title: "比特幣日報 - {日期}"
-description: "{簡短描述當日市場狀況，30字以內}"
-date: {YYYY-MM-DD}
-categories:
-  - 市場分析
-tags:
-  - Bitcoin
-  - BTC
-  - 日報
-image: ""
----
-
-## 📊 市場快照
-
-{詳細的價格數據分析，200-300字}
-
-## 📈 技術面分析
-
-{包含所有技術指標的詳細分析，400-600字}
-
-### RSI 相對強弱指標
-{RSI 數值及解讀}
-
-### MACD 指標
-{MACD 數值及趨勢判斷}
-
-### 移動平均線
-{MA50、MA200 及牛熊判斷}
-
-### 布林通道
-{上中下軌及波動率分析}
-
-### 綜合技術訊號
-{多空結論}
-
-## 📊 籌碼面分析
-
-{若有 derivatives 數據，分析 OI、多空比、交易所流量，300-400字}
-
-### 未平倉合約量 (Open Interest)
-{OI 數值、變化率、與價格配合分析}
-
-### 多空比 (Long/Short Ratio)
-{多空比數值、極端值預警}
-
-### 交易所淨流入/流出
-{流入流出金額、大戶動向判斷}
-
-### 籌碼面綜合判斷
-{綜合結論、大戶動向}
-
-## 🌐 市場結構
-
-{BTC Dominance 分析及對山寨幣影響，200-300字}
-
-## 🎭 情緒與新聞分析
-
-{恐慌貪婪指數分析}
-
-### 今日重點新聞
-
-#### 新聞 1: {繁體中文標題}
-**來源**: {來源}
-
-📌 **事件說明**:
-{用繁體中文詳細說明發生了什麼事，解釋事件背景和重點}
-
-📊 **市場影響評估**:
-{至少100字的詳細分析：價格影響方向、投資者情緒變化、短中期影響、建議應對策略}
-
----
-
-{重複以上格式處理其他新聞}
-
-## 💡 操作建議
-
-{綜合建議，包含短期和中長期看法，200-300字}
-
----
-
-*本文由 CoinPilot AI 自動生成，僅供參考，不構成投資建議。*
-```
-
-## 重要規則
-1. **內容必須充實**：每個章節都要達到指定字數要求
-2. **數據必須精確**：引用 JSON 中的所有技術指標和籌碼數據
-3. **分析必須詳細**：不可只列數據，要解釋其市場意義
-4. **新聞要翻譯說明**：不可直接貼英文，必須翻譯成繁體中文並詳細說明事件
-5. **市場影響評估至少100字**：每則新聞都要有詳細的市場影響分析
-6. **格式必須正確**：Front Matter 和 Markdown 格式必須完整
-7. **禁止編造**：所有數據必須來自 JSON，不可虛構
-8. **語氣要專業**：避免過度簡化，保持分析深度
-9. **籌碼面分析**：若 JSON 中有 derivatives 數據，必須分析並給出結論
-"""
+使用繁體中文，Markdown 格式，必須包含 YAML Front Matter。
+直接輸出文章，不要額外說明。"""
 
 # Front Matter 驗證正則表達式
 FRONT_MATTER_PATTERN = re.compile(
@@ -291,6 +65,9 @@ class Writer:
         self.github_token = github_token or os.getenv("GITHUB_TOKEN")
         self.client = None
         self.session = None
+        
+        # BAIA 圖表數據 (由 AnalystAgent 提供)
+        self.chart_data: Optional[dict] = None
 
     async def start(self):
         """啟動 Copilot SDK 客戶端"""
@@ -299,25 +76,16 @@ class Writer:
 
             logger.info(f"正在初始化 Copilot SDK (模型: {self.model})...")
 
-            config = {
-                "log_level": os.getenv("LOG_LEVEL", "info"),
-                "auto_start": True,
-                "auto_restart": True,
-            }
-
-            if self.github_token:
-                config["github_token"] = self.github_token
-
-            self.client = CopilotClient(config)
-            await self.client.start()
-
+            # 按照官方文檔建立客戶端（不需要配置參數）
+            self.client = CopilotClient()
+            
             logger.info("Copilot SDK 客戶端已啟動")
 
         except ImportError:
             logger.error("找不到 github-copilot-sdk，請執行: pip install github-copilot-sdk")
             raise
         except Exception as e:
-            logger.error(f"Copilot SDK 啟動失敗: {e}")
+            logger.error(f"Copilot SDK 啟動失敗: {e}", exc_info=True)
             raise
 
     async def stop(self):
@@ -337,16 +105,156 @@ class Writer:
             str: 完整的使用者提示詞
         """
         today = datetime.now().strftime("%Y-%m-%d")
+        
+        # 建構圖表資訊提示
+        chart_info = ""
+        if self.chart_data:
+            chart_info = f"""
+
+## 📈 BTC 走勢圖
+
+圖表已由 BAIA Agent 自動生成並保存，請在文章「市場快照」章節開頭嵌入以下圖片：
+
+![BTC 24小時走勢圖](/images/btc_daily.png)
+
+圖表數據摘要：
+- 當前價格: ${self.chart_data.get('current_price', 0):,.2f}
+- 24H 漲跌幅: {self.chart_data.get('price_change_24h', 0):+.2f}%
+- 24H 最高: ${self.chart_data.get('price_high_24h', 0):,.2f}
+- 24H 最低: ${self.chart_data.get('price_low_24h', 0):,.2f}
+"""
 
         prompt = f"""請根據以下 JSON 數據撰寫今日 ({today}) 的比特幣市場日報：
 
 ```json
 {json.dumps(context_data, indent=2, ensure_ascii=False)}
 ```
-
+{chart_info}
 請嚴格按照系統提示中的格式輸出 Markdown 文章。"""
 
         return prompt
+    
+    def _build_simplified_prompt(self, context_data: dict) -> str:
+        """
+        建構簡化的提示詞（不傳送完整 JSON，避免超時）
+        
+        Args:
+            context_data: 從 collector 獲取的每日市場資料
+            
+        Returns:
+            str: 簡化的提示詞
+        """
+        today = datetime.now().strftime("%Y-%m-%d")
+        
+        # 提取關鍵數據
+        price = context_data.get("price", {})
+        sentiment = context_data.get("sentiment", {})
+        technical = context_data.get("technical", {})
+        news = context_data.get("news", [])[:5]  # 只取前 5 則
+        market_structure = context_data.get("market_structure", {})
+        
+        # 建構圖表資訊
+        chart_info = ""
+        if self.chart_data:
+            chart_info = f"""
+**K 線圖數據**:
+- 當前價格: ${self.chart_data.get('current_price', 0):,.2f}
+- 24H 漲跌幅: {self.chart_data.get('price_change_24h', 0):+.2f}%
+- 圖表已生成: /images/btc_daily.png
+"""
+        
+        # 建構新聞摘要
+        news_summary = ""
+        if news:
+            news_summary = "\n**今日新聞**:\n"
+            for i, item in enumerate(news, 1):
+                title = item.get('title', 'N/A')
+                source = item.get('source', 'Unknown')
+                summary = item.get('content_summary', item.get('summary', ''))
+                if summary:
+                    summary = summary[:300] + "..." if len(summary) > 300 else summary
+                news_summary += f"{i}. 【{source}】{title}\n   摘要: {summary}\n\n"
+        
+        prompt = f"""請撰寫今日 ({today}) 的比特幣市場日報。
+
+**重要**: 請直接輸出完整的 Markdown 文章，不要生成摘要或大綱！
+
+## 市場數據
+
+### 💰 價格數據
+- 當前價格: ${price.get('price_usd', 0):,.2f}
+- 24H 漲跌: {price.get('price_change_24h', 0):+.2f}%
+- 24H 交易量: ${price.get('volume_24h', 0):,.0f}
+- 市值: ${price.get('market_cap', 0):,.0f}
+- 最後更新: {price.get('last_updated', today)}
+
+### 😱 市場情緒
+- 恐慌貪婪指數: {sentiment.get('value', 50)} ({sentiment.get('sentiment_zh', '中性')}) {sentiment.get('emoji', '')}
+- 分類: {sentiment.get('classification', 'N/A')}
+
+### 📊 技術指標
+
+**RSI(14)**:
+- 數值: {technical.get('rsi', {}).get('value', 'N/A')}
+- 訊號: {technical.get('rsi', {}).get('signal_zh', 'N/A')}
+- 說明: {technical.get('rsi', {}).get('description', '')}
+
+**MACD**:
+- DIF: {technical.get('macd', {}).get('dif', 'N/A')}
+- DEA: {technical.get('macd', {}).get('dea', 'N/A')}
+- Histogram: {technical.get('macd', {}).get('histogram', 'N/A')}
+- 訊號: {technical.get('macd', {}).get('signal_zh', 'N/A')}
+
+**移動平均線**:
+- MA50: ${technical.get('moving_averages', {}).get('ma_50', 0):,.2f}
+- MA200: ${technical.get('moving_averages', {}).get('ma_200', 0):,.2f}
+- 當前價格 vs MA200: {technical.get('moving_averages', {}).get('distance_from_ma200', 0):+.2f}%
+- 訊號: {technical.get('moving_averages', {}).get('signal_zh', 'N/A')}
+
+**布林通道**:
+- 上軌: ${technical.get('bollinger_bands', {}).get('upper', 0):,.2f}
+- 中軌: ${technical.get('bollinger_bands', {}).get('middle', 0):,.2f}
+- 下軌: ${technical.get('bollinger_bands', {}).get('lower', 0):,.2f}
+- Bandwidth: {technical.get('bollinger_bands', {}).get('bandwidth', 0):.2f}
+- 訊號: {technical.get('bollinger_bands', {}).get('signal_zh', 'N/A')}
+
+**綜合技術訊號**: {technical.get('summary', {}).get('signal_zh', 'N/A')}
+
+### 🌐 市場結構
+- BTC 市值佔比: {market_structure.get('btc_dominance', 0):.2f}%
+- 總市值: ${market_structure.get('total_market_cap', 0):,.0f}
+- 訊號: {market_structure.get('signal_zh', 'N/A')}
+{chart_info}
+{news_summary}
+
+## 你的任務
+
+請根據以上數據撰寫一篇**完整的市場日報**（至少 1500 字），包含：
+
+1. **完整的 YAML Front Matter** (如上面格式所示)
+2. **K 線圖嵌入** (使用 Hugo shortcode)
+3. **市場快照章節** - 詳細分析價格、交易量、市值
+4. **技術面分析章節** - 逐一解讀每個技術指標（RSI、MACD、MA、布林通道）
+5. **新聞分析章節** - 翻譯新聞標題並分析市場影響
+6. **操作建議章節** - 給出具體的投資建議和風險提示
+
+**注意**: 
+- 直接輸出 Markdown 文章，從 `---` 開始
+- 不要添加「已完成」、「文件已保存」等說明文字
+- 每個章節都要有充實的內容，不要過於簡潔
+- 新聞要翻譯成繁體中文並詳細分析"""
+        
+        return prompt
+    
+    def set_chart_data(self, chart_data: dict) -> None:
+        """
+        設定圖表數據 (由 BAIA AnalystAgent 調用)
+        
+        Args:
+            chart_data: 包含 current_price, price_change_24h 等欄位的字典
+        """
+        self.chart_data = chart_data
+        logger.info(f"已設定圖表數據: ${chart_data.get('current_price', 0):,.2f}")
 
     async def generate_article(self, context_data: dict) -> str:
         """
@@ -368,19 +276,27 @@ class Writer:
         logger.info("正在生成市場分析文章...")
 
         try:
-            # 建立會話
-            session = await self.client.create_session(
-                {
-                    "model": self.model,
-                    "streaming": False,
-                    "system_prompt": SYSTEM_PROMPT,
-                }
-            )
+            # 按照官方文檔建立會話（不使用 streaming，避免事件處理問題）
+            session = await self.client.create_session({
+                "model": self.model
+            })
+
+            # 簡化 prompt - 不傳送完整 JSON，改為結構化摘要
+            user_prompt = self._build_simplified_prompt(context_data)
+            
+            # 組合 system prompt 和 user prompt
+            full_prompt = f"{SYSTEM_PROMPT}\n\n{user_prompt}"
 
             # 發送請求並等待回應
-            user_prompt = self._build_prompt(context_data)
-            response = await session.send_and_wait({"prompt": user_prompt})
-
+            logger.info(f"發送請求到模型 {self.model}...")
+            logger.info("⏳ 正在生成文章，這可能需要 2-3 分鐘，請耐心等待...")
+            
+            response = await session.send_and_wait(
+                {"prompt": full_prompt},
+                timeout=300.0  # 設置為 5 分鐘 (300 秒)
+            )
+            
+            # 從回應中提取文章內容
             article = response.data.content
 
             # 驗證 Front Matter 格式
@@ -394,6 +310,244 @@ class Writer:
         except Exception as e:
             logger.error(f"文章生成失敗: {e}")
             raise
+
+    async def generate_comprehensive_report(
+        self,
+        multi_day_contexts: list,
+        persona_decisions: "MultiStrategyDecisions",
+        portfolio_allocation: "PortfolioAllocation",
+    ) -> str:
+        """
+        生成綜合投資報告（整合多日資料和四位投資者決策）
+
+        Args:
+            multi_day_contexts: 多日的 DailyContext 列表（按日期排序，最舊到最新）
+            persona_decisions: 四位投資者的決策結果
+            portfolio_allocation: 資金配置建議
+
+        Returns:
+            str: 生成的 Markdown 報告
+
+        Raises:
+            RuntimeError: SDK 未啟動或生成失敗
+        """
+        if not self.client:
+            raise RuntimeError("Copilot SDK 客戶端未啟動，請先調用 start()")
+
+        logger.info("正在生成綜合投資報告...")
+
+        try:
+            # 建立會話
+            session = await self.client.create_session({
+                "model": self.model
+            })
+
+            # 建構綜合報告的 prompt
+            user_prompt = self._build_comprehensive_prompt(
+                multi_day_contexts,
+                persona_decisions,
+                portfolio_allocation,
+            )
+            
+            # 綜合報告專用的 System Prompt
+            system_prompt = """你是專業的加密貨幣投資顧問團隊主筆。
+
+請撰寫一份綜合投資報告（至少 1500 字），包含：
+
+1. **市場回顧** - 分析過去數天的價格走勢、關鍵事件和趨勢變化
+2. **技術分析** - 多日的 RSI、MACD、MA 趨勢分析，識別關鍵支撐/阻力
+3. **新聞影響評估** - 整理並深入分析近期重要新聞對市場的影響
+4. **四位投資者觀點** - 展示並分析 Guardian/Quant/Strategist/Degen 的決策差異
+5. **資金配置建議** - 針對 100 萬美元資金提供具體的 BTC 購買/持有/賣出建議
+6. **風險提示** - 詳細說明當前市場風險和注意事項
+
+使用繁體中文，Markdown 格式，必須包含 YAML Front Matter。
+報告標題格式：「比特幣綜合投資報告 - YYYY-MM-DD」
+直接輸出文章，不要額外說明。"""
+
+            full_prompt = f"{system_prompt}\n\n{user_prompt}"
+
+            # 發送請求
+            logger.info(f"發送請求到模型 {self.model}...")
+            logger.info("⏳ 正在生成綜合報告，這可能需要 3-5 分鐘，請耐心等待...")
+            
+            response = await session.send_and_wait(
+                {"prompt": full_prompt},
+                timeout=400.0  # 綜合報告需要更長時間
+            )
+            
+            article = response.data.content
+
+            # 驗證並修復 Front Matter
+            if not self.validate_front_matter(article):
+                logger.warning("報告 Front Matter 格式有問題，嘗試修復...")
+                article = self._fix_comprehensive_front_matter(article, multi_day_contexts)
+
+            logger.info(f"綜合報告生成完成 (長度: {len(article)} 字元)")
+            return article
+
+        except Exception as e:
+            logger.error(f"綜合報告生成失敗: {e}")
+            raise
+
+    def _build_comprehensive_prompt(
+        self,
+        multi_day_contexts: list,
+        persona_decisions: "MultiStrategyDecisions",
+        portfolio_allocation: "PortfolioAllocation",
+    ) -> str:
+        """建構綜合報告的 Prompt"""
+        from datetime import datetime
+        
+        today = datetime.now().strftime("%Y-%m-%d")
+        days_count = len(multi_day_contexts)
+        
+        # 建構多日市場數據摘要
+        market_timeline = "## 📅 市場時間線\n\n"
+        for i, ctx in enumerate(multi_day_contexts):
+            ctx_date = ctx.metadata.get("date", ctx.collected_at[:10])
+            price = ctx.price.get("price_usd", 0)
+            change = ctx.price.get("change_24h", 0)
+            
+            # 技術指標
+            tech = ctx.technical
+            rsi = tech.get("rsi", {}).get("value", "N/A")
+            macd_signal = tech.get("macd", {}).get("signal_zh", "N/A")
+            
+            # 情緒
+            sentiment = ctx.sentiment
+            fg_value = sentiment.get("value", 50)
+            fg_label = sentiment.get("sentiment_zh", "中性")
+            
+            # 新聞數量
+            news_count = len(ctx.news)
+            
+            trend_emoji = "📈" if change > 0 else "📉" if change < 0 else "➡️"
+            market_timeline += f"### {ctx_date} {trend_emoji}\n"
+            market_timeline += f"- 價格: ${price:,.2f} ({change:+.2f}%)\n"
+            market_timeline += f"- RSI: {rsi} | MACD: {macd_signal}\n"
+            market_timeline += f"- 恐懼貪婪: {fg_value} ({fg_label})\n"
+            market_timeline += f"- 新聞數: {news_count} 則\n\n"
+        
+        # 建構新聞彙總
+        news_summary = "## 📰 近期重要新聞\n\n"
+        all_news = []
+        for ctx in multi_day_contexts:
+            ctx_date = ctx.metadata.get("date", ctx.collected_at[:10])
+            for news in ctx.news[:3]:  # 每天最多 3 則
+                all_news.append({
+                    "date": ctx_date,
+                    "title": news.get("title", ""),
+                    "source": news.get("source", ""),
+                    "summary": news.get("content_summary", news.get("summary", ""))[:300],
+                })
+        
+        for i, news in enumerate(all_news[:10], 1):  # 最多 10 則
+            news_summary += f"{i}. **[{news['date']}]** {news['title']}\n"
+            news_summary += f"   來源: {news['source']}\n"
+            if news['summary']:
+                news_summary += f"   摘要: {news['summary']}\n"
+            news_summary += "\n"
+        
+        # 建構四位投資者決策表
+        decisions_table = "## 🎭 四位投資者決策\n\n"
+        decisions_table += persona_decisions.to_markdown_table()
+        decisions_table += "\n\n"
+        
+        # 建構資金配置建議
+        allocation_section = "## 💰 $1,000,000 資金配置建議\n\n"
+        allocation_section += portfolio_allocation.format_summary()
+        allocation_section += "\n\n"
+        
+        # 取最新一天的詳細技術數據
+        latest_ctx = multi_day_contexts[-1]
+        latest_tech = latest_ctx.technical
+        
+        tech_details = "## 📊 最新技術指標詳情\n\n"
+        tech_details += f"**RSI(14)**: {latest_tech.get('rsi', {}).get('value', 'N/A')}\n"
+        tech_details += f"- 訊號: {latest_tech.get('rsi', {}).get('signal_zh', 'N/A')}\n\n"
+        tech_details += f"**MACD**: {latest_tech.get('macd', {}).get('signal_zh', 'N/A')}\n"
+        tech_details += f"- DIF: {latest_tech.get('macd', {}).get('dif', 'N/A')}\n"
+        tech_details += f"- DEA: {latest_tech.get('macd', {}).get('dea', 'N/A')}\n\n"
+        ma = latest_tech.get("moving_averages", {}) or latest_tech.get("ma", {})
+        tech_details += f"**移動平均線**:\n"
+        tech_details += f"- MA50: ${ma.get('ma_50', ma.get('ma50', 0)):,.2f}\n"
+        tech_details += f"- MA200: ${ma.get('ma_200', ma.get('ma200', 0)):,.2f}\n\n"
+        bb = latest_tech.get("bollinger_bands", {}) or latest_tech.get("bollinger", {})
+        tech_details += f"**布林通道**:\n"
+        tech_details += f"- 上軌: ${bb.get('upper', 0):,.2f}\n"
+        tech_details += f"- 中軌: ${bb.get('middle', 0):,.2f}\n"
+        tech_details += f"- 下軌: ${bb.get('lower', 0):,.2f}\n\n"
+        
+        # 組合完整 prompt
+        prompt = f"""請根據以下資料撰寫綜合投資報告（日期：{today}，分析過去 {days_count} 天）：
+
+**重要**: 請直接輸出完整的 Markdown 報告，從 `---` 開始！
+
+{market_timeline}
+{news_summary}
+{tech_details}
+{decisions_table}
+{allocation_section}
+
+## 你的任務
+
+請根據以上數據撰寫一份**專業的綜合投資報告**（至少 1500 字），必須包含：
+
+1. **完整的 YAML Front Matter**（title, description, date, categories, tags）
+2. **市場回顧**：總結過去 {days_count} 天的價格走勢和關鍵轉折點
+3. **技術面深度分析**：詳細解讀各技術指標的趨勢變化
+4. **新聞影響評估**：分析近期新聞對市場的影響（翻譯成繁體中文）
+5. **四位投資者觀點對比**：分析 Guardian/Quant/Strategist/Degen 的決策差異和理由
+6. **資金配置建議**：針對 $1,000,000 提供具體操作建議（買入金額、BTC 數量等）
+7. **風險提示與免責聲明**
+
+**注意**: 
+- 從 `---` 開始輸出，不要有多餘文字
+- 每個章節都要詳盡分析，不要過於簡潔
+- 新聞標題要翻譯成繁體中文
+- 資金配置必須提供具體金額（如「建議買入 $300,000，約 4.5 BTC」）"""
+
+        return prompt
+
+    def _fix_comprehensive_front_matter(self, content: str, contexts: list) -> str:
+        """修復綜合報告的 Front Matter"""
+        today = datetime.now().strftime("%Y-%m-%d")
+        
+        if contexts:
+            latest = contexts[-1]
+            price = latest.price.get("price_usd", 0)
+            change = latest.price.get("change_24h", 0)
+        else:
+            price = 0
+            change = 0
+
+        default_front_matter = f"""---
+title: "比特幣綜合投資報告 - {today}"
+description: "BTC ${price:,.0f}，整合四位 AI 投資者觀點的深度分析報告"
+date: {today}
+categories:
+  - 投資報告
+tags:
+  - Bitcoin
+  - BTC
+  - 投資建議
+  - AI分析
+image: ""
+---
+
+"""
+        if not content.strip().startswith("---"):
+            return default_front_matter + content
+
+        try:
+            parts = content.split("---", 2)
+            if len(parts) >= 3:
+                return default_front_matter + parts[2]
+        except Exception:
+            pass
+
+        return default_front_matter + content
 
     def validate_front_matter(self, content: str) -> bool:
         """
@@ -824,6 +978,8 @@ tags:
 image: ""
 ---
 
+{{{{< figure src="/images/btc_daily.png" alt="BTC 24小時走勢圖" >}}}}
+
 ## 📊 市場快照
 
 截至今日 ({today})，比特幣 (BTC) 報價 **${price_usd:,.2f}** 美元。過去 24 小時價格變動 **{change_24h:+.2f}%**，{'創下本週新低' if change_24h < -5 else '呈現小幅回調' if change_24h < 0 else '維持穩定走勢' if abs(change_24h) < 2 else '出現明顯上漲'}。
@@ -930,6 +1086,101 @@ MACD 線為 **{macd.get('macd', 'N/A')}**，信號線為 **{macd.get('signal', '
 
 *本文由 CoinPilot AI 自動生成 | 數據來源：CoinGecko、Binance、Alternative.me、Google News*  
 *技術指標：RSI、MACD、MA、Bollinger Bands | 鏈上數據：BTC Dominance*
+"""
+
+        return article
+
+    async def generate_comprehensive_report(
+        self,
+        multi_day_contexts: list,
+        persona_decisions,
+        portfolio_allocation,
+    ) -> str:
+        """生成模擬綜合投資報告"""
+        from datetime import datetime
+        
+        today = datetime.now().strftime("%Y-%m-%d")
+        days_count = len(multi_day_contexts)
+        
+        # 取最新一天的資料
+        latest = multi_day_contexts[-1] if multi_day_contexts else {}
+        price = latest.price if hasattr(latest, 'price') else {}
+        price_usd = price.get("price_usd", 0)
+        change_24h = price.get("change_24h", 0)
+        
+        # 建構市場時間線
+        timeline_section = "## 📅 市場時間線\n\n"
+        for ctx in multi_day_contexts:
+            ctx_date = ctx.metadata.get("date", ctx.collected_at[:10]) if hasattr(ctx, 'metadata') else "Unknown"
+            ctx_price = ctx.price.get("price_usd", 0) if hasattr(ctx, 'price') else 0
+            ctx_change = ctx.price.get("change_24h", 0) if hasattr(ctx, 'price') else 0
+            trend_emoji = "📈" if ctx_change > 0 else "📉" if ctx_change < 0 else "➡️"
+            timeline_section += f"### {ctx_date} {trend_emoji}\n"
+            timeline_section += f"- 收盤價: ${ctx_price:,.2f} ({ctx_change:+.2f}%)\n\n"
+        
+        # 決策表格
+        decisions_table = persona_decisions.to_markdown_table()
+        
+        # 資金配置
+        allocation_summary = portfolio_allocation.format_summary()
+        
+        article = f"""---
+title: "比特幣綜合投資報告 - {today}"
+description: "BTC ${price_usd:,.0f}，整合四位 AI 投資者觀點的深度分析報告"
+date: {today}
+categories:
+  - 投資報告
+tags:
+  - Bitcoin
+  - BTC
+  - 投資建議
+  - AI分析
+image: ""
+---
+
+## 📊 報告摘要
+
+本報告分析了過去 **{days_count} 天**的比特幣市場數據，並整合了四位 AI 投資者的決策建議。
+
+| 項目 | 數值 |
+|------|------|
+| 當前價格 | ${price_usd:,.2f} |
+| 24H 漲跌 | {change_24h:+.2f}% |
+| 分析天數 | {days_count} 天 |
+| 共識建議 | {persona_decisions.consensus_action} |
+
+{timeline_section}
+
+## 🎭 四位 AI 投資者決策對比
+
+{decisions_table}
+
+**投票結果**: 買入 {persona_decisions.buy_votes} | 賣出 {persona_decisions.sell_votes} | 持有 {persona_decisions.hold_votes}
+
+## 💰 資金配置建議
+
+{allocation_summary}
+
+## 📈 技術面分析
+
+根據過去 {days_count} 天的技術指標變化：
+
+- **RSI 趨勢**: 市場短期超賣，存在反彈可能
+- **MACD 訊號**: 動能指標顯示空頭趨勢仍在延續
+- **移動平均線**: 價格位於 MA50 和 MA200 下方，中長期趨勢偏弱
+
+## ⚠️ 風險提示
+
+> **重要提醒**:
+> - 加密貨幣市場波動劇烈，7×24 小時交易可能出現極端行情
+> - 本報告由 AI 生成，僅供參考，不構成投資建議
+> - 請根據自身風險承受能力謹慎決策
+> - 建議使用分批建倉策略，控制單次交易風險
+
+---
+
+*本報告由 CoinPilot AI 自動生成 | 分析期間: 過去 {days_count} 天*  
+*AI 投資者: Guardian (保守派) | Quant (量化派) | Strategist (宏觀派) | Degen (激進派)*
 """
 
         return article

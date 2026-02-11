@@ -1,7 +1,7 @@
 [project]
 name = "coinpilot-ai"
-version = "0.2.0"
-description = "自動化加密貨幣分析與出版系統"
+version = "0.3.0"
+description = "Bitcoin Autonomous Intelligence Agent - 自動化加密貨幣分析與出版系統"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -13,7 +13,7 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "pydantic>=2.0.0",
     # 技術指標分析
-    "pandas>=2.0.0",
+    "pandas>=2.2.0",
     "pandas-ta>=0.3.14b",
     "numpy>=1.24.0",
     # 新聞內容解析
@@ -23,6 +23,11 @@ dependencies = [
     # Web GUI
     "fastapi>=0.109.0",
     "uvicorn[standard]>=0.27.0",
+    # BAIA Agent 新增依賴
+    "yfinance>=0.2.40",
+    "mplfinance>=0.12.10b0",
+    "matplotlib>=3.8.0",
+    "structlog>=24.1.0",
 ]
 
 [project.optional-dependencies]

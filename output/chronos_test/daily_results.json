@@ -1,0 +1,1149 @@
+[
+  {
+    "date": "2024-01-01",
+    "btc_price": 44179.55,
+    "btc_change_pct": 4.483939155577652,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 25.0,
+        "reason": "漲勢良好 4.5%，不能錯過",
+        "confidence": 70.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=60.4)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 1000000.0,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-02",
+    "btc_price": 44946.91,
+    "btc_change_pct": 1.736912213908925,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 30.0,
+        "reason": "市場 FOMO 中 (FG=71)，跟上！",
+        "confidence": 75.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=63.4)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 1004342.2805347723,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-03",
+    "btc_price": 42845.23,
+    "btc_change_pct": -4.675916542427499,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 25.0,
+        "reason": "回調 -4.7%，加碼好時機",
+        "confidence": 70.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=51.8)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 981928.6355443976,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-04",
+    "btc_price": 44151.1,
+    "btc_change_pct": 3.0478772082679804,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 25.0,
+        "reason": "漲勢良好 3.0%，不能錯過",
+        "confidence": 70.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=57.1)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 999855.5981210569,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-05",
+    "btc_price": 44145.11,
+    "btc_change_pct": -0.013567045894661659,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 30.0,
+        "reason": "市場 FOMO 中 (FG=72)，跟上！",
+        "confidence": 75.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=57.0)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 999760.0124355872,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-06",
+    "btc_price": 43968.32,
+    "btc_change_pct": -0.400497269007317,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=56.1)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 996584.0827621536,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-07",
+    "btc_price": 43929.02,
+    "btc_change_pct": -0.08938253724500483,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 30.0,
+        "reason": "市場 FOMO 中 (FG=71)，跟上！",
+        "confidence": 75.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=55.9)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 995878.0810869121,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-08",
+    "btc_price": 46951.04,
+    "btc_change_pct": 6.879349204546149,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 35.0,
+        "reason": "大漲 6.9%！追起來 FOMO 🚀",
+        "confidence": 80.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=66.8)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 1054433.171566822,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-09",
+    "btc_price": 46110.0,
+    "btc_change_pct": -1.7913128228895479,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 30.0,
+        "reason": "市場 FOMO 中 (FG=76)，跟上！",
+        "confidence": 75.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=62.2)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 1037229.8306173551,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-10",
+    "btc_price": 46653.99,
+    "btc_change_pct": 1.1797657774886097,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 30.0,
+        "reason": "市場 FOMO 中 (FG=73)，跟上！",
+        "confidence": 75.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=63.9)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 1048689.9563266751,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-11",
+    "btc_price": 46339.16,
+    "btc_change_pct": -0.6748403137994524,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 30.0,
+        "reason": "市場 FOMO 中 (FG=76)，跟上！",
+        "confidence": 75.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=62.2)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 1041924.2072208092,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-12",
+    "btc_price": 42782.73,
+    "btc_change_pct": -7.67478305605885,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 30.0,
+        "reason": "市場 FOMO 中 (FG=71)，跟上！",
+        "confidence": 75.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=46.4)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 964434.7895804616,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-13",
+    "btc_price": 42847.99,
+    "btc_change_pct": 0.15251477581847261,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=46.7)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 965871.4730671297,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-14",
+    "btc_price": 41732.35,
+    "btc_change_pct": -2.603716066961366,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=42.7)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 941310.921962831,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-15",
+    "btc_price": 42511.1,
+    "btc_change_pct": 1.8660583456239586,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=46.1)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 958454.9192849713,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-16",
+    "btc_price": 43137.95,
+    "btc_change_pct": 1.4745560571239007,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=48.8)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 972254.8739833772,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-17",
+    "btc_price": 42776.1,
+    "btc_change_pct": -0.8387975874601425,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=47.3)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 964288.8316963577,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-18",
+    "btc_price": 41327.5,
+    "btc_change_pct": -3.3864478964767386,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 25.0,
+        "reason": "回調 -3.4%，加碼好時機",
+        "confidence": 70.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=42.0)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 932398.2448316998,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-19",
+    "btc_price": 41659.03,
+    "btc_change_pct": 0.802177532592689,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=43.6)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 939742.0899818257,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-20",
+    "btc_price": 41696.04,
+    "btc_change_pct": 0.08884028264700844,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=43.7)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 940561.9123478443,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-21",
+    "btc_price": 41580.33,
+    "btc_change_pct": -0.27753228423316156,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=43.3)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 937998.7768176629,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-22",
+    "btc_price": 39568.02,
+    "btc_change_pct": -4.839549094379271,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 25.0,
+        "reason": "回調 -4.8%，加碼好時機",
+        "confidence": 70.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=36.0)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 893423.3446273635,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-23",
+    "btc_price": 39897.6,
+    "btc_change_pct": 0.832945393780133,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=37.8)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 900759.2642539262,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-24",
+    "btc_price": 40084.88,
+    "btc_change_pct": 0.46942685009295265,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=38.9)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 904927.8152208013,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-25",
+    "btc_price": 39961.09,
+    "btc_change_pct": -0.3088445546439142,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=38.4)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 902172.4493291446,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-26",
+    "btc_price": 41823.51,
+    "btc_change_pct": 4.660583582680066,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 25.0,
+        "reason": "漲勢良好 4.7%，不能錯過",
+        "confidence": 70.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=48.6)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 943626.9169270053,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-27",
+    "btc_price": 42120.63,
+    "btc_change_pct": 0.7104138318376323,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=50.0)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 950262.8902176752,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-28",
+    "btc_price": 42031.06,
+    "btc_change_pct": -0.2126511403082046,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "無明確信號，維持現有倉位 (RSI=49.6)",
+        "confidence": 50.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 948262.4051354011,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-29",
+    "btc_price": 43302.7,
+    "btc_change_pct": 3.0255013852853883,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "BUY",
+        "amount_pct": 25.0,
+        "reason": "漲勢良好 3.0%，不能錯過",
+        "confidence": 70.0
+      },
+      "quant": {
+        "action": "BUY",
+        "amount_pct": 15.0,
+        "reason": "買入信號: MACD 多頭, 價格高於 BB 上軌",
+        "confidence": 65.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 976663.620386302,
+      "quant": 1000000.0,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-30",
+    "btc_price": 42941.1,
+    "btc_change_pct": -0.8350747562912357,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "BUY",
+        "amount_pct": 15.0,
+        "reason": "買入信號: MACD 多頭, 價格高於 BB 上軌",
+        "confidence": 65.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 968567.6407596141,
+      "quant": 998747.4222161667,
+      "strategist": 1000000.0
+    }
+  },
+  {
+    "date": "2024-01-31",
+    "btc_price": 42580.0,
+    "btc_change_pct": -0.8409193057467055,
+    "decisions": {
+      "guardian": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "市場情況不明朗，保持觀望",
+        "confidence": 60.0
+      },
+      "degen": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "等待更明確的訊號 WAGMI 💎🙌",
+        "confidence": 50.0
+      },
+      "quant": {
+        "action": "BUY",
+        "amount_pct": 15.0,
+        "reason": "買入信號: MACD 多頭, 價格高於 BB 上軌",
+        "confidence": 65.0
+      },
+      "strategist": {
+        "action": "HOLD",
+        "amount_pct": 0,
+        "reason": "價格在 MA200 上方，長期趨勢健康，繼續持有",
+        "confidence": 55.0
+      }
+    },
+    "portfolio_values": {
+      "guardian": 1000000.0,
+      "degen": 960482.8557950205,
+      "quant": 996424.4043111233,
+      "strategist": 1000000.0
+    }
+  }
+]

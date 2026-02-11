@@ -1,5 +1,9 @@
 """
 新聞採集客戶端 - 從 Google News RSS 抓取比特幣相關新聞並爬取文章內容
+
+支援：
+- 即時新聞爬取 (RSS)
+- 歷史新聞爬取 (Archive/Sitemap)
 """
 
 import html
@@ -7,8 +11,9 @@ import logging
 import re
 import time
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from typing import Optional
+from xml.etree import ElementTree
 
 import feedparser
 import requests
@@ -66,9 +71,15 @@ class NewsClient:
         "decrypt": "https://decrypt.co/feed",
     }
     
+    # CoinDesk Sitemap URLs (用於歷史新聞爬取)
+    COINDESK_SITEMAP_BASE = "https://www.coindesk.com/arc/outboundfeeds/sitemap-news/"
+    
     # Google News RSS (備用)
     GOOGLE_NEWS_RSS = "https://news.google.com/rss/search"
     TIMEOUT = 30
+    
+    # 歷史新聞爬取設定
+    HISTORICAL_REQUEST_DELAY = 1.5  # 請求間隔（秒）
     
     # 新聞去重歷史天數
     DEDUP_HISTORY_DAYS = 7
@@ -728,6 +739,325 @@ class NewsClient:
         except Exception as e:
             logger.error(f"新聞獲取失敗: {e}")
             raise
+
+    # ==========================================================================
+    # 歷史新聞爬取功能 (用於 Project Chronos 回測)
+    # ==========================================================================
+    
+    def get_historical_news(
+        self,
+        target_date: date,
+        limit: int = 5,
+        fetch_content: bool = False,
+        keywords: list[str] = None,
+    ) -> list[NewsItem]:
+        """
+        獲取特定日期的歷史新聞
+        
+        使用 CoinDesk Sitemap 和 Wayback Machine 作為資料來源
+        
+        Args:
+            target_date: 目標日期
+            limit: 最多返回的新聞數量
+            fetch_content: 是否爬取文章全文 (會增加請求時間)
+            keywords: 篩選關鍵字 (可選，預設為比特幣相關)
+            
+        Returns:
+            list[NewsItem]: 歷史新聞列表
+        """
+        if keywords is None:
+            keywords = ["bitcoin", "btc", "crypto", "cryptocurrency"]
+        
+        news_items = []
+        
+        # 方法 1: 嘗試從 CoinDesk Sitemap 獲取
+        try:
+            sitemap_news = self._fetch_from_coindesk_sitemap(target_date, limit * 2, keywords)
+            news_items.extend(sitemap_news)
+            logger.info(f"從 CoinDesk Sitemap 獲取 {len(sitemap_news)} 則新聞")
+        except Exception as e:
+            logger.warning(f"CoinDesk Sitemap 獲取失敗: {e}")
+        
+        # 方法 2: 如果數量不足，嘗試從 Wayback Machine 獲取
+        if len(news_items) < limit:
+            try:
+                wayback_news = self._fetch_from_wayback(target_date, limit - len(news_items), keywords)
+                news_items.extend(wayback_news)
+                logger.info(f"從 Wayback Machine 獲取 {len(wayback_news)} 則新聞")
+            except Exception as e:
+                logger.warning(f"Wayback Machine 獲取失敗: {e}")
+        
+        # 按日期相關性排序並限制數量
+        news_items = news_items[:limit]
+        
+        # 爬取文章內容
+        if fetch_content and news_items:
+            self._fetch_contents_for_items(news_items)
+        
+        return news_items
+    
+    def _fetch_from_coindesk_sitemap(
+        self,
+        target_date: date,
+        limit: int,
+        keywords: list[str],
+    ) -> list[NewsItem]:
+        """
+        從 CoinDesk Sitemap 獲取歷史新聞
+        
+        CoinDesk 的 sitemap-news 會包含近期的新聞 URL
+        對於較舊的日期，我們嘗試使用月度 sitemap
+        """
+        news_items = []
+        
+        # 嘗試月度 sitemap
+        year = target_date.year
+        month = target_date.month
+        
+        # CoinDesk 的 sitemap 格式
+        sitemap_urls = [
+            f"https://www.coindesk.com/arc/outboundfeeds/sitemap-news/?outputType=xml",
+            f"https://www.coindesk.com/sitemap-index.xml",
+        ]
+        
+        for sitemap_url in sitemap_urls:
+            try:
+                response = self.session.get(sitemap_url, timeout=self.TIMEOUT)
+                if response.status_code != 200:
+                    continue
+                
+                # 解析 XML
+                urls = self._parse_sitemap_xml(response.text, target_date, keywords)
+                
+                for url_info in urls[:limit]:
+                    news_items.append(NewsItem(
+                        title=url_info.get("title", url_info["url"].split("/")[-1].replace("-", " ").title()),
+                        link=url_info["url"],
+                        source="CoinDesk",
+                        published=url_info.get("published", target_date.isoformat()),
+                        summary=None,
+                    ))
+                
+                if news_items:
+                    break
+                    
+            except Exception as e:
+                logger.debug(f"Sitemap {sitemap_url} 解析失敗: {e}")
+                continue
+        
+        return news_items
+    
+    def _parse_sitemap_xml(
+        self,
+        xml_content: str,
+        target_date: date,
+        keywords: list[str],
+    ) -> list[dict]:
+        """解析 Sitemap XML 並篩選符合日期和關鍵字的 URL"""
+        results = []
+        
+        try:
+            # 移除 XML 命名空間以簡化解析
+            xml_content = re.sub(r'xmlns[^"]*"[^"]*"', '', xml_content)
+            root = ElementTree.fromstring(xml_content)
+            
+            # 尋找所有 url 或 sitemap 元素
+            for url_elem in root.findall(".//url"):
+                loc = url_elem.find("loc")
+                lastmod = url_elem.find("lastmod")
+                
+                if loc is None:
+                    continue
+                
+                url = loc.text
+                
+                # 檢查日期
+                if lastmod is not None:
+                    try:
+                        mod_date = datetime.fromisoformat(lastmod.text.replace("Z", "+00:00")).date()
+                        if mod_date != target_date:
+                            continue
+                    except:
+                        pass
+                
+                # 檢查關鍵字
+                url_lower = url.lower()
+                if any(kw.lower() in url_lower for kw in keywords):
+                    # 從 URL 提取標題
+                    title = url.split("/")[-1].replace("-", " ").title() if "/" in url else url
+                    
+                    results.append({
+                        "url": url,
+                        "title": title,
+                        "published": target_date.isoformat(),
+                    })
+        
+        except ElementTree.ParseError as e:
+            logger.debug(f"XML 解析錯誤: {e}")
+        
+        return results
+    
+    def _fetch_from_wayback(
+        self,
+        target_date: date,
+        limit: int,
+        keywords: list[str],
+    ) -> list[NewsItem]:
+        """
+        從 Wayback Machine 獲取歷史新聞
+        
+        使用 Wayback Machine CDX API 查詢特定日期的新聞網站快照
+        """
+        news_items = []
+        
+        # 格式化日期為 Wayback 格式 (YYYYMMDD)
+        date_str = target_date.strftime("%Y%m%d")
+        
+        # 要搜索的新聞網站
+        news_sites = [
+            "coindesk.com",
+            "cointelegraph.com",
+        ]
+        
+        for site in news_sites:
+            if len(news_items) >= limit:
+                break
+            
+            try:
+                # Wayback CDX API
+                cdx_url = (
+                    f"https://web.archive.org/cdx/search/cdx?"
+                    f"url={site}/*&matchType=prefix&output=json"
+                    f"&from={date_str}&to={date_str}"
+                    f"&filter=statuscode:200&limit=20"
+                )
+                
+                response = self.session.get(cdx_url, timeout=self.TIMEOUT)
+                if response.status_code != 200:
+                    continue
+                
+                data = response.json()
+                if len(data) <= 1:  # 第一行是標題
+                    continue
+                
+                # 解析結果
+                for row in data[1:]:
+                    if len(news_items) >= limit:
+                        break
+                    
+                    # CDX 格式: [urlkey, timestamp, original, mimetype, statuscode, digest, length]
+                    original_url = row[2] if len(row) > 2 else ""
+                    timestamp = row[1] if len(row) > 1 else ""
+                    
+                    # 篩選關鍵字
+                    url_lower = original_url.lower()
+                    if not any(kw.lower() in url_lower for kw in keywords):
+                        continue
+                    
+                    # 只要文章頁面
+                    if not re.search(r'/\d{4}/\d{2}/\d{2}/|/news/|/article/', original_url):
+                        continue
+                    
+                    # 從 URL 提取標題
+                    title = original_url.split("/")[-1].replace("-", " ").title()
+                    
+                    # 建立 Wayback URL
+                    wayback_url = f"https://web.archive.org/web/{timestamp}/{original_url}"
+                    
+                    news_items.append(NewsItem(
+                        title=title,
+                        link=wayback_url,
+                        source=site.split(".")[0].title(),
+                        published=target_date.isoformat(),
+                        summary=None,
+                    ))
+                
+                time.sleep(0.5)  # 避免請求過快
+                
+            except Exception as e:
+                logger.debug(f"Wayback {site} 查詢失敗: {e}")
+                continue
+        
+        return news_items
+    
+    def _fetch_contents_for_items(self, news_items: list[NewsItem]):
+        """為新聞列表爬取文章內容"""
+        logger.info(f"開始爬取 {len(news_items)} 篇歷史新聞內容...")
+        
+        for i, item in enumerate(news_items):
+            logger.debug(f"  [{i+1}/{len(news_items)}] {item.title[:40]}...")
+            
+            try:
+                content, summary, keywords = self.fetch_article_content(item.link)
+                item.content = content
+                item.content_summary = summary
+                item.keywords = keywords
+            except Exception as e:
+                item.fetch_error = str(e)
+                logger.debug(f"    爬取失敗: {e}")
+            
+            # 請求間隔
+            if i < len(news_items) - 1:
+                time.sleep(self.HISTORICAL_REQUEST_DELAY)
+        
+        successful = sum(1 for item in news_items if item.has_content())
+        logger.info(f"歷史新聞內容爬取完成: {successful}/{len(news_items)} 成功")
+    
+    def get_historical_news_batch(
+        self,
+        start_date: date,
+        end_date: date,
+        limit_per_day: int = 5,
+        delay_between_days: float = 1.5,
+        progress_callback=None,
+    ) -> dict[str, list[NewsItem]]:
+        """
+        批次獲取日期範圍內的歷史新聞
+        
+        Args:
+            start_date: 開始日期
+            end_date: 結束日期
+            limit_per_day: 每天最多新聞數量
+            delay_between_days: 每天請求之間的間隔（秒）
+            progress_callback: 進度回調函數 (current_day, total_days, date)
+            
+        Returns:
+            dict[str, list[NewsItem]]: 以日期為 key 的新聞字典
+        """
+        results = {}
+        
+        total_days = (end_date - start_date).days + 1
+        current = start_date
+        day_count = 0
+        
+        while current <= end_date:
+            day_count += 1
+            date_str = current.strftime("%Y-%m-%d")
+            
+            if progress_callback:
+                progress_callback(day_count, total_days, current)
+            
+            logger.info(f"[{day_count}/{total_days}] 獲取 {date_str} 的新聞...")
+            
+            try:
+                news = self.get_historical_news(
+                    target_date=current,
+                    limit=limit_per_day,
+                    fetch_content=False,  # 批次時不爬取內容以節省時間
+                )
+                results[date_str] = news
+                logger.info(f"  獲取 {len(news)} 則新聞")
+            except Exception as e:
+                logger.warning(f"  獲取失敗: {e}")
+                results[date_str] = []
+            
+            current += timedelta(days=1)
+            
+            # 請求間隔
+            if current <= end_date:
+                time.sleep(delay_between_days)
+        
+        return results
 
 
 if __name__ == "__main__":
